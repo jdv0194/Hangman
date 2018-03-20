@@ -60,13 +60,6 @@ var rightGuessCounter = 0;
 //FUNCTIONS
 //----------------------------------------
 function reset() {
-  //Chooses word randombly from the wordBank
-  choosenWord = wordBank[Math.floor(Math.random() * wordBank.length)];
-  //Splits the choosen word into individual letters
-  lettersInWord = choosenWord.split("");
-  //Get the number of blanks
-  numBlanks = lettersInWord.length;
-
   //RESET
   //===========================================================
   letterGuessed = 0;
@@ -102,9 +95,18 @@ function reset() {
     "y",
     "z"
   ];
-  test = false;
+
   startGame();
 }
+document.onkeyup = function(event) {
+  var letterGuessed = event.key;
+  for (var i = 0; i < doubleWord.length; i++) {
+    if (letterGuessed === doubleWord[i]) {
+      compareLetters(letterGuessed);
+      winLose();
+    }
+  }
+};
 function startGame() {
   //Chooses word randombly from the wordBank
   choosenWord = wordBank[Math.floor(Math.random() * wordBank.length)];
@@ -112,41 +114,6 @@ function startGame() {
   lettersInWord = choosenWord.split("");
   //Get the number of blanks
   numBlanks = lettersInWord.length;
-
-  //RESET
-  //===========================================================
-  rightGuessCounter = 0;
-  guessesLeft = 9;
-  wrongLetters = [];
-  blanksAndSuccesses = [];
-  doubleWord = [
-    "a",
-    "b",
-    "c",
-    "d",
-    "e",
-    "f",
-    "g",
-    "h",
-    "i",
-    "j",
-    "k",
-    "l",
-    "m",
-    "n",
-    "o",
-    "p",
-    "q",
-    "r",
-    "s",
-    "t",
-    "u",
-    "v",
-    "w",
-    "x",
-    "y",
-    "z"
-  ];
 
   //Populate blanks
   for (var i = 0; i < numBlanks; i++) {
@@ -204,9 +171,11 @@ function winLose() {
     //Counts Wins
     winCount++;
     //Changes HTML
-    document.getElementById("winCounter").innerHTML = winCount;
-    alert("You Win");
-    reset();
+    setTimeout(function() {
+      document.getElementById("winCounter").innerHTML = winCount;
+      alert("You Win");
+      reset();
+    }, 1000);
   } else if (guessesLeft === 0) {
     // When number of Guesses reaches 0 then You lose
     //Counts losses
@@ -217,24 +186,4 @@ function winLose() {
     reset();
   }
 }
-
-//MAIN PROCCESS
-//-------------------------------------------
-//Initiates the Code
 startGame();
-
-document.onkeyup = function(event) {
-  test = true;
-  var letterGuessed = event.key;
-  for (var i = 0; i < doubleWord.length; i++) {
-    if (letterGuessed === doubleWord[i] && test === true) {
-      var spliceDword = doubleWord.splice(i, 1);
-      //Test / Debug
-      console.log("Double word is = " + doubleWord[i]);
-      console.log("Spliced Word is = " + spliceDword);
-
-      compareLetters(letterGuessed);
-      winLose();
-    }
-  }
-};
